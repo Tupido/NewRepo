@@ -24,11 +24,13 @@ namespace task07._2
                 Console.WriteLine("Лежит");
             else 
                 Console.WriteLine("Не лежит");
+
+            Console.ReadKey();
         }
 
         static bool PointInArea(double x,  double y) 
         {
-            return ();
+            return (-2 <= y && -1 <= x || x <= -3);
         }
     }
 }

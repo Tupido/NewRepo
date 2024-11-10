@@ -10,93 +10,65 @@ namespace task07._3
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Введите позицию белой пешки");
-            var whitePawnPosition = Console.ReadLine();
+            Console.WriteLine("Введите позицию белого короля:");
+            var whiteKing = Console.ReadLine();
+            Console.WriteLine("Введите позицию чёрного ферзя:");
+            var blackQueen = Console.ReadLine();
 
-            int whitePawnRow, whitePawnColumn;
+            if (whiteKing == blackQueen || IsWhiteKingUnderAttack(whiteKing, blackQueen))
+            {
+                Console.WriteLine("Король не должен стоять под боем или на той же клетке, что и ферзь.");
+                Console.ReadKey();
+                return;
+            }
 
-            DecodePosition(whitePawnPosition, out whitePawnRow, out whitePawnColumn);
-            Console.WriteLine($"({whitePawnRow}; {whitePawnColumn})");
+            Console.WriteLine("Введите позицию хода белого короля:");
+            var move = Console.ReadLine();
+            bool isValidMove = IsMoveCorrect(move, whiteKing, blackQueen);
+            Console.WriteLine(isValidMove ? "Ход возможен" : "Ход невозможен");
 
             Console.ReadKey();
         }
 
-        static void DecodePosition(string position, out int x, out int y)
+        static bool IsWhiteKingUnderAttack(string whiteKing, string blackQueen)
         {
-            x = int.Parse(position[1].ToString());
-            y = (int)position[0] - 0x60;
-        }
-        static void Main()
-        {
-            int boardSize;
-            while (true)
-            {
-                Console.WriteLine("Введите размер доски");
-                boardSize = int.Parse(Console.ReadLine());
-                if (boardSize < 1 || boardSize > 26)
-                {
-                    Console.WriteLine("Допустисый размер от 1 до 26");
-                    continue;
-                }
-                else
-                    break;
-            }
-
-            PrintBoard(boardSize);
-
-            Console.ReadKey();
+            return IsSameRowOrColumn(whiteKing, blackQueen) || IsDiagonalAttack(whiteKing, blackQueen);
         }
 
-        static void PrintBoard(int size)
+        static bool IsSameRowOrColumn(string pos1, string pos2)
         {
-            const ConsoleColor Dark = ConsoleColor.DarkRed;
-            const ConsoleColor Light = ConsoleColor.Blue;
+            int r1, c1, r2, c2;
+            DecodePosition(pos1, out c1, out r1);
+            DecodePosition(pos2, out c2, out r2);
 
-            PrintHeader(size);
+            return r1 == r2 || c1 == c2; 
+        }
+        static bool IsDiagonalAttack(string pos1, string pos2)
+        {
+            int r1, c1, r2, c2;
+            DecodePosition(pos1, out c1, out r1);
+            DecodePosition(pos2, out c2, out r2);
 
-            for (var i = size; i > 0; i--)
-            {
-                Console.Write($"{i,2}");
-
-                ConsoleColor color;
-                if (i % 2 == 0)
-                    color = Light;
-                else
-                    color = Dark;
-
-                for (var j = 0; j < size; j++)
-                {
-                    PrintSquare(color);
-
-                    if (color == Light)
-                        color = Dark;
-                    else
-                        color = Light;
-                }
-
-                Console.WriteLine(i);
-            }
-
-            PrintHeader(size);
+            return Math.Abs(r1 - r2) == Math.Abs(c1 - c2); 
         }
 
-        static void PrintHeader(int size)
+        static void DecodePosition(string position, out int column, out int row)
         {
-            Console.Write("  ");
-            for (int i = 0; i < size; i++)
-                Console.Write((char)(0x61 + i));
-
-            Console.WriteLine();
+            row = int.Parse(position[1].ToString());
+            column = position[0] - 'a' + 1;
         }
 
-        static void PrintSquare(ConsoleColor color)
+        static bool IsMoveCorrect(string move, string whiteKingPosition, string blackQueenPosition)
         {
-            const char square = (char)0x2588;
+            int wc, wr, mc, mr;
+            DecodePosition(whiteKingPosition, out wc, out wr);
+            DecodePosition(move, out mc, out mr);
 
-            var defaultColor = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            Console.Write(square);
-            Console.ForegroundColor = defaultColor;
+            bool isInBounds = mc >= 1 && mc <= 8 && mr >= 1 && mr <= 8;
+            bool isOneStepMove = Math.Abs(wc - mc) <= 1 && Math.Abs(wr - mr) <= 1; 
+            bool isUnderAttack = IsWhiteKingUnderAttack(move, blackQueenPosition);
+
+            return isInBounds && isOneStepMove && (move != blackQueenPosition) && !isUnderAttack;
         }
     }
 }

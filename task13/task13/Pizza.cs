@@ -2,36 +2,30 @@
 
 namespace task13
 {
-    public class Pizza
+    public class Pizza : Dish
     {
-        public string Name { get; } = "Неизвестная пицца";
-
-        public string Description { get; set; }
         public int Diameter { get; }
         public PizzaType Type { get; }
         public string[] Ingredients { get; }
-        public decimal Price { get; }
 
-        public Pizza(string description, int diameter, PizzaType type, string[] ingredients, decimal price)
+        public Pizza(string name, string description, decimal price,
+                     int diameter, PizzaType type, string[] ingredients)
+            : base(name, description, price)
         {
             if (diameter <= 0)
                 throw new ArgumentException("Диаметр должен быть положительным числом.", nameof(diameter));
-            if (price <= 0)
-                throw new ArgumentException("Цена должна быть больше нуля.", nameof(price));
 
-            Description = description;
             Diameter = diameter;
             Type = type;
             Ingredients = ingredients ?? throw new ArgumentNullException(nameof(ingredients));
-            Price = price;
         }
 
-        public virtual string[] GetInfo()
+        public override string[] GetInfo()
         {
-            var info = new string[2];
+            var info = new string[3];
             info[0] = $"Название: {Name}";
-            info[1] = $"Описание: {Description}, Диаметр: {Diameter} см, Тип: {Type}, Ингредиенты: {string.Join(", ", Ingredients)}, Цена: {Price:C2}";
-
+            info[1] = $"Описание: {Description}, Цена: {Price:F2} руб.";
+            info[2] = $"Диаметр: {Diameter} см, Тип: {Type}, Ингредиенты: {string.Join(", ", Ingredients)}";
             return info;
         }
     }

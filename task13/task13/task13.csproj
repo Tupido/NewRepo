@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="Dish.cs" />
     <Compile Include="Drink.cs" />
+    <Compile Include="Order.cs" />
     <Compile Include="PizzaType.cs" />
     <Compile Include="Pizza.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

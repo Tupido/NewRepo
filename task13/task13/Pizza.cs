@@ -2,7 +2,7 @@
 
 namespace task13
 {
-    public class Pizza : Dish
+    public class Pizza : Dish, IComparable<Pizza>
     {
         public int Diameter { get; }
         public PizzaType Type { get; }
@@ -27,6 +27,17 @@ namespace task13
             info[1] = $"Описание: {Description}, Цена: {Price:F2} руб.";
             info[2] = $"Диаметр: {Diameter} см, Тип: {Type}, Ингредиенты: {string.Join(", ", Ingredients)}";
             return info;
+        }
+
+        public int CompareTo(Pizza other)
+        {
+            if (other == null) return 1;
+
+            int nameComparison = Name.CompareTo(other.Name);
+            if (nameComparison != 0)
+                return nameComparison;
+
+            return Diameter.CompareTo(other.Diameter);
         }
     }
 }
